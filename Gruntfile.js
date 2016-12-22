@@ -89,17 +89,7 @@ module.exports = function(grunt) {
 		grunt.log.writeln('Wipe that smirk off your face; this is serious.');
 	});
 	grunt.initConfig({
-		watch: {
-			files: ['Gruntfile.js']
-		}
-		copy: {
-			main: {
-				files: {
-					src: ['assets/js/*.js'],
-					dest: './dest'
-				}
-			}
-		}
+		
 	});
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-copy');
