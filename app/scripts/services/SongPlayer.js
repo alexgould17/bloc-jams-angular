@@ -1,16 +1,16 @@
 (function() {
-	function SongPlayer() {
+	function SongPlayer(Fixtures) {
 		/**
-		* @desc custom object that holds all the services & variables for this service provider.
+		* @desc Custom object that holds all the services & variables for this service provider.
 		* @type {Object}
 		*/
 		var SongPlayer = {};
 		
 		/**
-		* @desc Holds the data of the song that's currently playing
+		* @desc Album holding all the songs & their data
 		* @type {Object}
 		*/
-		var currentSong = null;
+		var currentAlbum = Fixtures.getAlbum();
 		
 		/**
 		* @desc Buzz object audio file
@@ -26,7 +26,7 @@
 		var setSong = function(song) {
 			if (currentBuzzObject) {
 				currentBuzzObject.stop();
-				currentSong.playing = null;
+				SongPlayer.currentSong.playing = null;
 			}
 
 			currentBuzzObject = new buzz.sound(song.audioUrl, {
@@ -34,7 +34,7 @@
 				preload: true
 			});
 
-			currentSong = song;
+			SongPlayer.currentSong = song;
 		};
 		
 		/**
@@ -43,19 +43,35 @@
 		*/
 		var playSong = function() {
 			currentBuzzObject.play();
-			song.playing = true;
+			SongPlayer.currentSong.playing = true;
 		};
+		
+		/**
+		* @function getSongIndex
+		* @desc Gets the 0-start index of the song object passed in the current album
+		* @param {Object} song
+		*/
+		var getSongIndex = function(song) {
+			return currentAlbum.songs.indexOf(song);
+		};
+		
+		/**
+		* @desc Holds the data of the song that's currently playing
+		* @type {Object}
+		*/
+		SongPlayer.currentSong = null;
 		
 		/**
 		* @function play
 		* @desc Plays the song parameter passed to the method.
-		* @param {Object} song
+		* @param {Object} song (optional)
 		*/
 		SongPlayer.play = function(song) {
-			if(currentSong !== song) {
+			song == song || SongPlayer.currentSong;
+			if(SongPlayer.currentSong !== song) {
 				setSong(song);
 				playSong();
-			} else if (currentSong === song) {
+			} else if (SongPlayer.currentSong === song) {
 				if (currentBuzzObject.isPaused())
 					currentBuzzObject.play();
 			}
@@ -64,12 +80,35 @@
 		/**
 		* @function pause
 		* @desc Pauses the song parameter passed to the method
-		* @param {Object} song
+		* @param {Object} song (optional)
 		*/
 		SongPlayer.pause = function(song) {
+			song = song || SongPlayer.currentSong;
 			currentBuzzObject.pause();
 			song.playing = false;
 		};
+		
+		/**
+		* @function previous
+		* @desc Goes to the start of the previous song in the album & plays it. Does not wrap, unlike the last player. Sigh...
+		*/
+		SongPlayer.previous = function() {
+			var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+			currentSongIndex--;
+			if (currentSongIndex < 0) {
+				currentBuzzObject.stop();
+				SongPlayer.currentSong.playing = null;
+			} else {
+				var song = currentAlbum.songs[currentSongIndex];
+				setSong(song);
+				playSong(song);
+			}
+		};
+		
+		/**
+		* @function next
+		* @desc Goes to the start of the next song in the album & plays it. Does not wrap, unlike the last player.
+		*/
 
 		return SongPlayer;
 	}
