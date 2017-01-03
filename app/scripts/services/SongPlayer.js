@@ -1,7 +1,15 @@
 (function() {
 	function SongPlayer() {
+		/**
+		* @desc custom object that holds all the services & variables for this service provider.
+		* @type {Object}
+		*/
 		var SongPlayer = {};
 		
+		/**
+		* @desc Holds the data of the song that's currently playing
+		* @type {Object}
+		*/
 		var currentSong = null;
 		
 		/**
@@ -28,18 +36,36 @@
 
 			currentSong = song;
 		};
-
+		
+		/**
+		* @function playSong
+		* @desc Plays currentBuzzObject & sets the playing variable to true
+		*/
+		var playSong = function() {
+			currentBuzzObject.play();
+			song.playing = true;
+		};
+		
+		/**
+		* @function play
+		* @desc Plays the song parameter passed to the method.
+		* @param {Object} song
+		*/
 		SongPlayer.play = function(song) {
 			if(currentSong !== song) {
 				setSong(song);
-				currentBuzzObject.play();
-				song.playing = true;
+				playSong();
 			} else if (currentSong === song) {
 				if (currentBuzzObject.isPaused())
 					currentBuzzObject.play();
 			}
 		};
 		
+		/**
+		* @function pause
+		* @desc Pauses the song parameter passed to the method
+		* @param {Object} song
+		*/
 		SongPlayer.pause = function(song) {
 			currentBuzzObject.pause();
 			song.playing = false;
